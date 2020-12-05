@@ -8,7 +8,7 @@ RUN apt-get install -y pulseaudio
 COPY pokemon_ruby.gba /tmp/
 
 COPY autostart /home/ubuntu/.config/lxsession/LXDE/
-COPY xorg.conf /etc/X11/xorg.conf
+COPY xorg.conf /home/ubuntu/.config/X11/xorg.conf
 COPY startvnc.sh start.sh /usr/local/bin/
 COPY retroarch.cfg /home/ubuntu/.config/retroarch/
 
