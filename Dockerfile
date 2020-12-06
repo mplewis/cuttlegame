@@ -1,41 +1,35 @@
-# Built with arch: amd64 flavor: lxde image: ubuntu:20.04
-#
-################################################################################
-# base system
-################################################################################
-
 FROM ubuntu:20.04 as system
 
 RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
 
-# built-in packages
 ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update
+RUN apt-get install -y \
+    software-properties-common
+
+RUN add-apt-repository ppa:libretro/testing
 RUN apt-get update
 RUN apt-get install -y \
     apache2-utils \
-    arc-theme \
     build-essential \
     curl \
     dbus-x11 \
-    gnome-themes-standard \
-    gtk2-engines-murrine \
-    gtk2-engines-pixbuf \
     libgl1-mesa-dri \
-    lxde \
+    libretro-* \
     mesa-utils \
     net-tools \
     nginx \
     python3-dev \
     python3-pip \
+    retroarch \
     software-properties-common \
     sudo \
     supervisor \
-    vim-tiny \
     x11-utils \
     x11vnc \
     xvfb \
-    xz-utils \
-    zenity
+    xz-utils
 
 # tini to fix subreap
 ARG TINI_VERSION=v0.18.0
@@ -50,49 +44,20 @@ RUN apt-get update \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && rm -rf /tmp/a.txt /tmp/b.txt
 
-RUN add-apt-repository ppa:libretro/testing
-RUN apt-get update
-RUN apt-get install -y \
-    retroarch \
-    libretro-vbam \
-    screen
+########################################
 
-################################################################################
-# builder
-################################################################################
-FROM ubuntu:20.04 as builder
+FROM node:15.3 as builder
 
-
-RUN sed -i 's#http://archive.ubuntu.com/ubuntu/#mirror://mirrors.ubuntu.com/mirrors.txt#' /etc/apt/sources.list;
-
-
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl ca-certificates gnupg patch
-
-# nodejs
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
-    && apt-get install -y nodejs
-
-# yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update \
-    && apt-get install -y yarn
-
-# build frontend
 COPY web /src/web
-RUN cd /src/web \
-    && yarn \
-    && yarn build
+WORKDIR /src/web
+RUN yarn install
+RUN yarn build
+
 RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js
 
+########################################
 
-
-################################################################################
-# merge
-################################################################################
 FROM system
-LABEL maintainer="fcwu.tw@gmail.com"
 
 COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /
