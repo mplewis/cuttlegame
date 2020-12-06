@@ -44,6 +44,8 @@ RUN apt-get update \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && rm -rf /tmp/a.txt /tmp/b.txt
 
+RUN apt-get install -y novnc
+
 ########################################
 
 FROM node:15.3 as builder
@@ -63,10 +65,11 @@ COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /
 RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && \
     chmod +x /usr/local/lib/web/frontend/static/websockify/run
+RUN ln -s /usr/share/novnc/vnc_auto.html /usr/share/novnc/index.html
 
 EXPOSE 80
 WORKDIR /root
 ENV HOME=/home/ubuntu \
     SHELL=/bin/bash
 HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://127.0.0.1:6079/api/health
-ENTRYPOINT ["/startup.sh"]
+CMD [ "start.sh" ]
