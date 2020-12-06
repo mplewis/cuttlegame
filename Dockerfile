@@ -48,28 +48,10 @@ RUN apt-get install -y novnc
 
 ########################################
 
-FROM node:15.3 as builder
-
-COPY web /src/web
-WORKDIR /src/web
-RUN yarn install
-RUN yarn build
-
-RUN sed -i 's#app/locale/#novnc/app/locale/#' /src/web/dist/static/novnc/app/ui.js
-
-########################################
-
 FROM system
 
-COPY --from=builder /src/web/dist/ /usr/local/lib/web/frontend/
 COPY rootfs /
-RUN ln -sf /usr/local/lib/web/frontend/static/websockify /usr/local/lib/web/frontend/static/novnc/utils/websockify && \
-    chmod +x /usr/local/lib/web/frontend/static/websockify/run
 RUN ln -s /usr/share/novnc/vnc_auto.html /usr/share/novnc/index.html
 
 EXPOSE 80
-WORKDIR /root
-ENV HOME=/home/ubuntu \
-    SHELL=/bin/bash
-HEALTHCHECK --interval=30s --timeout=5s CMD curl --fail http://127.0.0.1:6079/api/health
 CMD [ "start.sh" ]
