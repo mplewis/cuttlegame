@@ -50,6 +50,12 @@ RUN apt-get update \
     && ln -s /usr/bin/python3 /usr/local/bin/python \
     && rm -rf /tmp/a.txt /tmp/b.txt
 
+RUN add-apt-repository ppa:libretro/testing
+RUN apt-get update
+RUN apt-get install -y \
+    retroarch \
+    libretro-vbam \
+    screen
 
 ################################################################################
 # builder
