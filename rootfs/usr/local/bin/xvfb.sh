@@ -1,3 +1,5 @@
 #!/bin/sh
 
-exec /usr/bin/Xvfb :1 -screen 0 1024x768x24
+RESOLUTION="${RESOLUTION:-480x320}"
+
+exec /usr/bin/Xvfb :1 -screen 0 "$RESOLUTION"x24
