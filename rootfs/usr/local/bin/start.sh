@@ -1,10 +1,10 @@
 #!/bin/bash
 set -exo pipefail
 
-VNC_PASSWORD="${VNC_PASSWORD:-$(openssl rand -base64 12)}"
+PASSWORD="${PASSWORD:-$(openssl rand -base64 12)}"
 set -u
 
-echo -n "$VNC_PASSWORD" > /.password1
+echo -n "$PASSWORD" > /.password1
 x11vnc -storepasswd "$(cat /.password1)" /.password2
 chmod 400 /.password*
 sed -i 's/^command=x11vnc.*/& -rfbauth \/.password2/' /etc/supervisor/conf.d/supervisord.conf
@@ -22,13 +22,13 @@ Y8.   .88 88.  .88   88     88   88 88.  ... 88.  .88 88.  .88 88  88  88 88.  .
                                               d8888P
 
 Connect to your Cuttlegame instance in your web browser:
-http://localhost:8000?scale=local&password=$VNC_PASSWORD
+http://localhost:8000?scale=local&password=$PASSWORD
 EOF
 
 echo -e "\033[0m"
 set -x
 
-export VNC_PASSWORD=
+export PASSWORD=
 
 pulseaudio --start
 exec /bin/tini -- supervisord -n -c /etc/supervisor/supervisord.conf
