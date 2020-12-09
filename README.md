@@ -36,27 +36,30 @@ http://localhost:8000?scale=local&password=m43MV0J5mNZgwSoi
 
 ## Controls
 
-Controls are defined in [retroarch.cfg](rootfs/root/.config/retroarch/retroarch.cfg) and are not customizable at this time:
+Controls are defined in [retroarch.cfg](rootfs/root/.config/retroarch/retroarch.cfg):
 
 Controller Button | Keyboard Binding
 ---|---
-Up | I
-Left | J
-Down | K
-Right | L
-Start | Enter
-Select | /
-A | X
-B | Z
-X | S
-Y | A
+Up | W
+Left | A
+Down | S
+Right | D
 L | Q
-R | W
+R | E
+A | J
+B | H
+X | U
+Y | Y
+Start | M
+Select | N
+
+To customize the controls, create your own copy of [retroarch.cfg](https://retropie.org.uk/docs/RetroArch/), change the controls (`input_player1_a = "x"`, etc.) and mount it into `/config/retroarch.cfg`. This will override all other Retroarch configuration as well.
 
 ## Mounts
 
 * `/roms`: Mount your ROM files into this directory inside the container.
 * `/saves`: When RetroArch saves your game, it will write the save files to this directory inside the container. Mount this into your local filesystem to keep the save data after the container exits.
+* `/config`: If this directory contains `retroarch.cfg`, it will replace the default config. Use this to customize RetroArch settings and controls.
 
 ## Environment Variables
 

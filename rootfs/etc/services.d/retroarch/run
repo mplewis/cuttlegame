@@ -10,6 +10,10 @@ set -u
 
 export DISPLAY=:1
 
+if [ -f "/config/retroarch.cfg" ]; then
+  cp /config/retroarch.cfg /root/.config/retroarch/retroarch.cfg
+fi
+
 COREPATH=/usr/lib/libretro/"$CORE"_libretro.so
 ROMPATH="/roms/$ROM"
 
