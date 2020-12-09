@@ -1,0 +1,19 @@
+#!/usr/bin/with-contenv bash
+# shellcheck shell=bash
+set -exo pipefail
+
+Q=""
+if [ -z "$VERBOSE" ]; then
+  Q="--quiet"
+fi
+set -u
+
+until [ -f /.password1 ]; do
+  echo 'Waiting for password...'
+  sleep 5
+done
+
+x11vnc -storepasswd "$(cat /.password1)" /.password2
+chmod 400 /.password*
+
+x11vnc -display :1 -xkb -forever -shared -repeat -capslock -rfbauth /.password2 $Q
