@@ -2,6 +2,11 @@
 # shellcheck shell=bash
 set -exo pipefail
 
+if [ ! -f "$ROM" ]; then
+  echo "File not found: $ROM"
+  exit 1
+fi
+
 PASSWORD="${PASSWORD:-$(openssl rand -base64 12)}"
 echo -n "$PASSWORD" > /.password1
 set -u
