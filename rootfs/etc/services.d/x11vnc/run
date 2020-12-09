@@ -8,11 +8,7 @@ if [ -z "$VERBOSE" ]; then
 fi
 set -u
 
-until [ -f /.password1 ]; do
-  echo 'Waiting for password...'
-  sleep 5
-done
-
+until [ -f /.password1 ]; do sleep 1; done
 x11vnc -storepasswd "$(cat /.password1)" /.password2
 chmod 400 /.password*
 
