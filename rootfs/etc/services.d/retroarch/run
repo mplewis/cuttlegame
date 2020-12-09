@@ -6,15 +6,19 @@ V=""
 if [ -n "$VERBOSE" ]; then
   V="-v"
 fi
+
+APPEND_CONFIG=""
+if [ -n "$CONFIG" ]; then
+  if [ ! -f "$CONFIG" ]; then
+    echo "File not found: $CONFIG"
+    exit 1
+  fi
+  APPEND_CONFIG="--appendconfig=$CONFIG"
+fi
+
 set -u
 
 export DISPLAY=:1
-
-if [ -f "/config/retroarch.cfg" ]; then
-  cp /config/retroarch.cfg /root/.config/retroarch/retroarch.cfg
-fi
-
 COREPATH=/usr/lib/libretro/"$CORE"_libretro.so
-ROMPATH="/roms/$ROM"
 
-retroarch -f $V --libretro "$COREPATH" "$ROMPATH"
+retroarch -f $V --libretro "$COREPATH" "$ROM" "$APPEND_CONFIG"
