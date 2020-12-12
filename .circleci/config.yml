@@ -1,0 +1,28 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@1.5.0
+
+workflows:
+  commit:
+    jobs:
+      - build-and-push
+
+jobs:
+  build-and-push:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/build:
+          image: mplewis/cuttlegame
+      - docker/check
+      - when:
+          condition: << pipeline.git.tag >>
+          steps:
+            - run: echo "<< pipeline.git.tag >>"
+      - unless:
+          condition: << pipeline.git.tag >>
+          steps:
+            - run: echo "No tag set"
