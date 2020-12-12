@@ -6,7 +6,10 @@ orbs:
 workflows:
   commit:
     jobs:
-      - build-and-push
+      - build-and-push:
+          filters:
+            tags:
+              only: /.*/
 
 jobs:
   build-and-push:
