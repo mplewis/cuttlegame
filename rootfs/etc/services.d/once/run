@@ -13,6 +13,8 @@ set -u
 
 pulseaudio --start
 
+ln -s /usr/share/novnc/vnc_auto.html /usr/share/novnc/index.html
+
 set +x
 echo -e "\033[0;32m"
 cat <<EOF

@@ -32,7 +32,6 @@ RUN apt-get install -y \
 ADD https://github.com/just-containers/s6-overlay/releases/download/v2.1.0.2/s6-overlay-amd64-installer /tmp/
 RUN chmod +x /tmp/s6-overlay-amd64-installer && /tmp/s6-overlay-amd64-installer /
 
-RUN ln -s /usr/share/novnc/vnc_auto.html /usr/share/novnc/index.html
 COPY rootfs /
 
 EXPOSE 80
