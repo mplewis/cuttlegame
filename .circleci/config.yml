@@ -1,0 +1,35 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@1.5.0
+
+workflows:
+  commit:
+    jobs:
+      - build-and-push
+
+jobs:
+  build-and-push:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/build:
+          image: mplewis/cuttlegame
+          tag: << pipeline.git.tag >>
+      - when:
+          condition: << pipeline.git.tag >>
+          steps:
+            - docker/check
+            - docker/build:
+                image: mplewis/cuttlegame
+                tag: latest
+            - docker/push:
+                image: mplewis/cuttlegame
+                tag: << pipeline.git.tag >>
+            - docker/push:
+                image: mplewis/cuttlegame
+                tag: latest
+            - docker/update-description:
+                image: mplewis/cuttlegame
