@@ -17,12 +17,16 @@ jobs:
       - checkout
       - docker/build:
           image: mplewis/cuttlegame
+          tag: test-tag-please-ignore
       - docker/check
-      - when:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run: echo "<< pipeline.git.tag >>"
-      - unless:
-          condition: << pipeline.git.tag >>
-          steps:
-            - run: echo "No tag set"
+      - docker/push:
+          image: mplewis/cuttlegame
+          tag: test-tag-please-ignore
+      - docker/update-description:
+          image: mplewis/cuttlegame
+      # - when:
+      #     condition: << pipeline.git.tag >>
+      #     steps:
+      #       - run: echo "<< pipeline.git.tag >>"
+      # - unless:
+      #     condition: << pipeline.git.tag >>
